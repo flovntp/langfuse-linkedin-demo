@@ -23,9 +23,9 @@ if (!url) {
   process.exit(1);
 }
 
-const provider = getProvider(values.model);
-
 try {
+  const provider = getProvider(values.model);
+
   // Attributes set here are copied to the trace and every span inside it.
   const result = await propagateAttributes(
     {

@@ -17,6 +17,7 @@ export function getProvider(spec = process.env.DEFAULT_MODEL ?? "anthropic:claud
 
   switch (provider) {
     case "anthropic":
+      requireEnv("ANTHROPIC_API_KEY");
       return anthropicProvider(model);
     case "lmstudio":
       return openAICompatibleProvider({
@@ -39,6 +40,6 @@ export function getProvider(spec = process.env.DEFAULT_MODEL ?? "anthropic:claud
 
 function requireEnv(name: string): string {
   const value = process.env[name];
-  if (!value) throw new Error(`${name} is missing in .env`);
+  if (!value) throw new Error(`${name} is empty: add it to .env (see .env.example)`);
   return value;
 }

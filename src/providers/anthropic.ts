@@ -32,6 +32,7 @@ export function anthropicProvider(model: string): LlmProvider {
       return {
         text,
         usage: { input: response.usage.input_tokens, output: response.usage.output_tokens },
+        truncated: response.stop_reason === "max_tokens",
       };
     },
   };

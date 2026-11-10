@@ -13,6 +13,8 @@ interface PromptVersion {
   commitMessage: string;
   system: string;
   user: string;
+  // max_tokens is a ceiling, not a target: you pay for the tokens generated. Keep it high,
+  // reasoning models (Claude Haiku 5.5 thinks by default) spend part of it on thinking.
   config: { max_tokens: number };
 }
 
@@ -20,7 +22,7 @@ export const PROMPT_VERSIONS: Record<PromptName, { v1: PromptVersion; v2: Prompt
   summarize: {
     v1: {
       commitMessage: "v1: simple",
-      config: { max_tokens: 1024 },
+      config: { max_tokens: 8000 },
       system: "You summarize technical blog posts accurately. Never invent facts.",
       user: `Summarize the blog post below in 5 bullet points for a developer audience.
 Keep names, numbers and the main takeaway. Write in {{language}}.
@@ -31,7 +33,7 @@ Title: {{title}}
     },
     v2: {
       commitMessage: "v2: structured summary (main claim, facts, audience)",
-      config: { max_tokens: 1024 },
+      config: { max_tokens: 8000 },
       system:
         "You summarize technical blog posts for developers. Be precise and never invent facts: " +
         "if something is not in the post, leave it out.",
@@ -52,7 +54,7 @@ Title: {{title}}
   "linkedin-post": {
     v1: {
       commitMessage: "v1: simple",
-      config: { max_tokens: 1024 },
+      config: { max_tokens: 8000 },
       system: "You write LinkedIn posts for a developer advocate.",
       user: `Write a LinkedIn post about this blog post.
 
@@ -67,7 +69,7 @@ Summary:
     },
     v2: {
       commitMessage: "v2: hook, structure, call to action",
-      config: { max_tokens: 1024 },
+      config: { max_tokens: 8000 },
       system:
         "You are a developer advocate who writes LinkedIn posts that engineers actually read: " +
         "concrete, specific, no buzzwords. Return only the post, nothing before or after it.",
@@ -124,6 +126,6 @@ export function compilePrompt(prompt: ChatPromptClient, variables: Record<string
   return {
     system: messages.find((m) => m.role === "system")?.content ?? "",
     user: messages.find((m) => m.role === "user")?.content ?? "",
-    maxTokens: config.max_tokens ?? 1024,
+    maxTokens: config.max_tokens ?? 8000,
   };
 }

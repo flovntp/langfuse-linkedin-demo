@@ -32,6 +32,7 @@ export function openAICompatibleProvider({ provider, model, baseURL, apiKey }: O
       return {
         text: stripThinking(response.choices[0]?.message.content ?? ""),
         usage: { input: usage?.prompt_tokens ?? 0, output: usage?.completion_tokens ?? 0 },
+        truncated: response.choices[0]?.finish_reason === "length",
         costUsd: provider === "lmstudio" ? 0 : usage?.cost,
       };
     },

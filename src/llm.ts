@@ -36,7 +36,12 @@ export async function tracedCompletion({ name, provider, prompt, variables }: Tr
         usageDetails: { input: result.usage.input, output: result.usage.output },
         // When we know the real cost we send it; otherwise Langfuse infers it.
         ...(result.costUsd !== undefined && { costDetails: { total: result.costUsd } }),
+        ...(result.truncated && {
+          level: "WARNING",
+          statusMessage: `Output cut off at max_tokens (${maxTokens}): raise max_tokens in the prompt config`,
+        }),
       });
+      if (result.truncated) console.warn(`⚠ ${name}: output cut off at max_tokens (${maxTokens})`);
 
       return result.text;
     },

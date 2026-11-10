@@ -20,9 +20,9 @@ Experiments are **shown from recorded runs**: they take minutes and LLM output c
 - [ ] In the Compare view, check that the ClickHouse 26.10 row still makes the point (see step 4).
   If Gemma did not make a mistake there this time, pick the row with the largest faithfulness gap.
 - [ ] Offline rehearsal: wifi off, LM Studio on, then
-  `npm run run -- https://clickhouse.com/blog/clickhouse-release-26-10 --model=lmstudio:google/gemma-3-12b`.
-  **Not tested yet with LM Studio**: do this rehearsal at least once. Use the model id LM Studio
-  shows in its Developer tab (`google/gemma-3-12b` is an example).
+  `npm run run -- https://clickhouse.com/blog/clickhouse-release-26-10 --model=lmstudio:gemma-3-12b-it-qat`.
+  Tested with LM Studio Bionic (port 1235, Gemma 3 12B QAT 4-bit, 16k context): about 2 minutes
+  per post on an M2 with 24 GB. Too slow to wait for on stage: start it, talk, come back.
 - [ ] Browser tabs, in order: Traces, Prompts → `linkedin-post`, Datasets → `blog-posts` → Runs,
   the Compare view. Zoom the browser to 125–150% for the projector.
 - [ ] Terminal: large font, in the repo folder, history cleared (`clear`).
@@ -124,7 +124,7 @@ Repo link on the last slide.
 
 | Problem | What to do |
 |---|---|
-| **No wifi** | Langfuse is local already. Articles come from `.cache/` (the `fetch-article` span shows `fromCache: true`). Switch the model to LM Studio: `--model=lmstudio:google/gemma-3-12b`. Experiments are recorded, nothing to run. |
+| **No wifi** | Langfuse is local already. Articles come from `.cache/` (the `fetch-article` span shows `fromCache: true`). Switch the model to LM Studio: `--model=lmstudio:gemma-3-12b-it-qat` (about 2 min per post: start it, keep talking). Experiments are recorded, nothing to run. |
 | **Anthropic API down or slow** | Same as no wifi: LM Studio for live runs. The recorded experiment runs do not need the API. |
 | **Langfuse UI does not load** | `npm run langfuse:up` again; first start takes about a minute. Still down: the CLI keeps working (prompts fall back to v1 from the code, the trace is not sent), and switch to screenshots in `docs/screenshots/`. |
 | **The live post is bad or breaks a rule** | Good, it is a demo of observability: open the trace and show which step went wrong and why (`check-post` is a `WARNING`). |
@@ -132,4 +132,5 @@ Repo link on the last slide.
 | **`403 Key limit exceeded` from OpenRouter** | The key has a spending limit: raise it on openrouter.ai/settings/keys, or use the recorded run. |
 | **You moved the `production` label and forgot** | `npm run setup` puts it back on v1. |
 | **Running an experiment live gives different numbers** | Expected: LLM output varies. That is why you show recorded runs. |
-| **LM Studio answers with an error about context length** | Reload the model with a context length of at least 16k tokens (Developer tab). |
+| **LM Studio answers with an error about context length** | Reload the model with a context length of 16k tokens. |
+| **The local model is very slow (under ~5 tokens/s)** | Check the loaded context in *Loaded instances*: on-demand loading can pick 80k+ tokens, which fills the RAM. Reload at 16384. Stop Docker containers and apps you don't need: on a 24 GB Mac the model, Langfuse (~5 GB in Docker) and the browser compete for memory. |

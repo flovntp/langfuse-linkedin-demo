@@ -41,7 +41,7 @@ flowchart LR
 ```
 
 - **Models** sit behind a `<provider>:<model>` string: `anthropic:claude-haiku-5-5` (default),
-  `openrouter:google/gemma-3-12b-it`, `lmstudio:google/gemma-3-12b` (local).
+  `openrouter:google/gemma-3-12b-it`, `lmstudio:gemma-3-12b-it-qat` (local, LM Studio or LM Studio Bionic).
 - **Rule check** is plain code: at most 1,300 characters, the link is in the post, at most 3 hashtags.
 - **Judge** is always Claude Haiku 5.5, whatever model wrote the post, so runs stay comparable.
 
@@ -50,7 +50,7 @@ flowchart LR
 You need Node 22+, Docker, and an Anthropic API key.
 
 ```bash
-git clone https://github.com/<you>/langfuse-linkedin-demo && cd langfuse-linkedin-demo
+git clone https://github.com/flovntp/langfuse-linkedin-demo && cd langfuse-linkedin-demo
 npm install
 cp .env.example .env          # then set ANTHROPIC_API_KEY
 npm run langfuse:up           # local Langfuse on http://localhost:3000 (login in .env)

@@ -7,7 +7,7 @@ export type { LlmProvider } from "./types.js";
 /**
  * Builds a provider from a "<provider>:<model>" string, e.g.
  *   anthropic:claude-haiku-5-5
- *   lmstudio:google/gemma-3-12b
+ *   lmstudio:gemma-3-12b-it-qat
  *   openrouter:anthropic/claude-haiku-5.5
  */
 export function getProvider(spec = process.env.DEFAULT_MODEL ?? "anthropic:claude-haiku-5-5"): LlmProvider {

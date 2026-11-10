@@ -4,3 +4,4 @@ node_modules/
 .last-trace.json
 *.log
 .DS_Store
+CLAUDE.md

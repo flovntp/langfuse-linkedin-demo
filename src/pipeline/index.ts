@@ -13,7 +13,7 @@ export async function blogToLinkedIn(url: string, provider: LlmProvider, options
     root.update({ input: { url, ...options, model: `${provider.provider}:${provider.model}` } });
 
     const article = await fetchArticle(url);
-    const summary = await summarize(article, provider, options.language);
+    const summary = await summarize(article, provider, options.language, options.promptLabel);
     const post = await generatePost(summary, provider, { ...options, url });
     const check = await tracedCheckPost(post, url, options.maxChars);
 

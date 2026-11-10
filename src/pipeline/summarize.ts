@@ -1,15 +1,13 @@
 import { tracedCompletion } from "../llm.js";
-import { compile, PROMPTS } from "../prompts.js";
+import { getPrompt, type PromptLabel } from "../prompts.js";
 import type { LlmProvider } from "../providers/index.js";
 import type { Article } from "./fetch.js";
 
-export async function summarize(article: Article, provider: LlmProvider, language: string) {
-  const prompt = PROMPTS.summarize;
+export async function summarize(article: Article, provider: LlmProvider, language: string, label: PromptLabel) {
   return tracedCompletion({
     name: "summarize",
     provider,
-    system: prompt.system,
-    user: compile(prompt.user, { title: article.title, article: article.text, language }),
-    maxTokens: 1024,
+    prompt: await getPrompt("summarize", label),
+    variables: { title: article.title, article: article.text, language },
   });
 }

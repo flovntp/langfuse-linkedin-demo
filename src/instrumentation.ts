@@ -11,6 +11,9 @@ export const otelSdk = new NodeSDK({
 otelSdk.start();
 
 // Short-lived CLI: flush everything before the process exits.
+// If Langfuse is down the trace is lost, but the run itself still succeeded.
 export async function shutdownTracing() {
-  await otelSdk.shutdown();
+  await otelSdk.shutdown().catch((error) => {
+    console.error(`(trace not sent to Langfuse: ${error instanceof Error ? error.message || error.name : error})`);
+  });
 }

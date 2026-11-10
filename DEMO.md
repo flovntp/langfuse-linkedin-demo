@@ -86,7 +86,8 @@ Datasets → `blog-posts` → Runs. Show the run-level scores of the three runs:
 |---|---|---|
 | Claude, prompt v1 | 69% | 0.73 |
 | Claude, prompt v2 | 94% | 0.77 |
-| Gemma 3 12B, prompt v2 | 100% | 0.66 |
+| Gemma 3 12B, prompt v2 (OpenRouter) | 100% | 0.66 |
+| Gemma 3 12B QAT, prompt v2 (local) | 100% | 0.67 |
 
 (Numbers from the rehearsal runs on 2026-11-10: replace them with yours.)
 

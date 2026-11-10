@@ -9,10 +9,8 @@ numbers instead of vibes, and they can run it themselves from the repo.
 
 **Length**: ~1,800 words, 5 screenshots, 4 short code snippets.
 
-> ⚠ Before publishing: the Gemma numbers so far come from **OpenRouter** (Gemma 3 12B, same open
-> weights, run in the cloud). Run the experiment once with **LM Studio** on the laptop and either
-> replace the numbers or add a "local vs hosted Gemma" row. Latency and cost are the columns that
-> will change; faithfulness should be close.
+> Gemma ran twice: hosted on OpenRouter and locally (LM Studio Bionic, QAT 4-bit, 16k context).
+> Faithfulness is the same (0.66 vs 0.67): the gap is Gemma vs Claude, not local vs hosted.
 
 ---
 
@@ -86,13 +84,18 @@ Table (replace with final runs):
 | Claude Haiku 5.5, prompt v1 | 69% | 0.73 | $0.018 | 8 s |
 | Claude Haiku 5.5, prompt v2 | 94% | 0.77 | $0.017 | 7 s |
 | Gemma 3 12B, prompt v2 (OpenRouter) | 100% | 0.66 | $0.004 | 24 s |
-| Gemma 3 12B, prompt v2 (LM Studio, local) | TODO | TODO | $0 | TODO |
+| Gemma 3 12B QAT 4-bit, prompt v2 (LM Studio Bionic, local, M2 24 GB) | 100% | 0.67 | $0 | 76 s |
 
 What to say:
 - The prompt mattered more than the model for the rules: v1 → v2 is +25 points.
 - Gemma follows instructions as well, but adds things the article does not say: lower on 7 posts,
   equal on 7, higher on 2.
 - Back to the hook example, with `compare.png` and `judge-comment.png`.
+- Local vs hosted Gemma: same faithfulness, so 4-bit quantization (QAT) did not cost quality here.
+  Local is free and private but ~3x slower than hosted on a 24 GB M2 (76 s vs 24 s per post).
+- Side story for the local section: the first local run took 7 minutes per post. On-demand
+  loading had picked an 81k-token context; the KV cache pushed the Mac into swap (0.6 tokens/s).
+  Reloading at 16k: 6.6 tokens/s. Check the loaded context before blaming the model.
 - Decision framing, not a verdict: for a draft a human edits, Gemma at a quarter of the cost may be
   fine; for posts published as-is, the faithfulness gap is the cost.
 
@@ -127,6 +130,5 @@ The best story of the build, give it its own section:
 
 - [ ] Screenshots listed in `docs/screenshots/README.md`
 - [ ] Final experiment runs (2–3 per config) and the updated table
-- [ ] LM Studio run on the laptop
 - [ ] Short side note: Langfuse v4 turned off some public read endpoints (traces, scores) in
       events-only mode; use `/api/public/v2/observations`, or the UI

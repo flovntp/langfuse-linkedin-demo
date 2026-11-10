@@ -88,9 +88,11 @@ Same 16 posts, same judge, one run each (LLM output varies, so treat small gaps 
 |---|---|---|---|---|
 | Claude Haiku 5.5, prompt v1 | 69% | 0.73 | $0.018 | 8 s |
 | Claude Haiku 5.5, prompt v2 | **94%** | **0.77** | $0.017 | 7 s |
-| Gemma 3 12B (OpenRouter), prompt v2 | **100%** | 0.66 | **$0.004** | 24 s |
+| Gemma 3 12B (OpenRouter), prompt v2 | **100%** | 0.66 | $0.004 | 24 s |
+| Gemma 3 12B QAT 4-bit (local, M2 24 GB), prompt v2 | **100%** | 0.67 | **$0** | 76 s |
 
-Gemma follows the rules just as well, but states more things the article does not say. On the
+Gemma follows the rules just as well, but states more things the article does not say, and it
+does so the same way locally and hosted: the 4-bit local version is as faithful as the hosted one. On the
 ClickHouse 26.10 release notes, its hook claims integer division truncates by default; the article
 says the opposite. Only the judge catches it: the code checks pass.
 

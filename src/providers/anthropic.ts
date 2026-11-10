@@ -2,7 +2,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { CompletionRequest, CompletionResult, LlmProvider } from "./types.js";
 
 export function anthropicProvider(model: string): LlmProvider {
-  const client = new Anthropic(); // reads ANTHROPIC_API_KEY
+  // Reads ANTHROPIC_API_KEY. The SDK emits its own OpenTelemetry span per call, which Langfuse
+  // would show as a second generation (and count the cost twice): we already trace the call
+  // ourselves, with the prompt version attached, so we turn the SDK's spans off.
+  const client = new Anthropic({ openTelemetry: false });
 
   return {
     provider: "anthropic",

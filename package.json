@@ -8,7 +8,8 @@
     "langfuse:reset": "./scripts/langfuse.sh reset",
     "run": "tsx --env-file-if-exists=.env src/cli/run.ts",
     "typecheck": "tsc",
-    "setup": "tsx --env-file-if-exists=.env src/setup/index.ts"
+    "setup": "tsx --env-file-if-exists=.env src/setup/index.ts",
+    "experiment": "tsx --env-file-if-exists=.env src/cli/experiment.ts"
   },
   "type": "module",
   "private": "true",

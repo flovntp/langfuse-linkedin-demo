@@ -38,6 +38,16 @@ export const PUBLIC_POSTS: BlogPostItem[] = [
 // │ `npm run setup`. They are added to the same dataset, with source "mine".      │
 // └──────────────────────────────────────────────────────────────────────────────┘
 export const MY_POSTS: BlogPostItem[] = [
-  // { id: "upsun-REPLACE-ME", kind: "how-to", source: "mine",
-  //   url: "https://upsun.com/blog/REPLACE-ME/" },
+   { id: "upsun-sdk-php", kind: "release-notes", source: "mine",
+     url: "https://developer.upsun.com/posts/releases/upsun-php-sdk-announcement" },
+   { id: "upsun-sdk-node", kind: "release-notes", source: "mine",
+     url: "https://developer.upsun.com/posts/releases/upsun-node-sdk-announcement" },
+   { id: "vntp-content-calendar", kind: "how-to", source: "mine",
+     url: "https://vntp.fr/en/portfolio/blog-publishing-calendar/" },
+   { id: "upsun-ai-log-analysis", kind: "how-to", source: "mine",
+     url: "https://developer.upsun.com/posts/tutorials/ai-log-analysis-agent-in-an-upsun-task-container" },
+   { id: "upsun-opencode", kind: "how-to", source: "mine",
+     url: "https://developer.upsun.com/posts/ai/opencode-on-upsun" },
+   { id: "upsun-meta", kind: "release-notes", source: "mine",
+     url: "https://developer.upsun.com/posts/core-concepts/meta-upsun-validation-schema-dx-improvement" },
 ];

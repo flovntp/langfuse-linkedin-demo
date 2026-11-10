@@ -1,0 +1,32 @@
+{
+  "name": "langfuse-linkedin-demo",
+  "version": "1.0.0",
+  "description": "Blog post → LinkedIn post, traced and evaluated with Langfuse",
+  "scripts": {
+    "langfuse:up": "./scripts/langfuse.sh up",
+    "langfuse:down": "./scripts/langfuse.sh down",
+    "langfuse:reset": "./scripts/langfuse.sh reset",
+    "run": "tsx --env-file-if-exists=.env src/cli/run.ts",
+    "typecheck": "tsc"
+  },
+  "type": "module",
+  "private": "true",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.7.0",
+    "@langfuse/client": "^6.1.1",
+    "@langfuse/otel": "^6.1.1",
+    "@langfuse/tracing": "^6.1.1",
+    "@mozilla/readability": "^0.6.0",
+    "@opentelemetry/sdk-node": "^0.223.1",
+    "linkedom": "^0.18.15",
+    "openai": "^7.55.0"
+  }
+}

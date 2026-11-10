@@ -1,0 +1,18 @@
+# Applied on top of the official Langfuse docker-compose.yml.
+# Internal services keep talking to each other on the docker network, but are
+# not published on the host, so they never clash with a local Postgres/Redis.
+# Only the UI (3000) and MinIO (9090, used for media uploads) stay published.
+services:
+  langfuse-worker:
+    ports: !reset []
+  langfuse-ai-gateway:
+    ports: !reset []
+  clickhouse:
+    ports: !reset []
+  redis:
+    ports: !reset []
+  postgres:
+    ports: !reset []
+  minio:
+    ports: !override
+      - 9090:9000

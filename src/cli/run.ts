@@ -5,6 +5,7 @@ import { LangfuseClient } from "@langfuse/client";
 import { propagateAttributes } from "@langfuse/tracing";
 import { blogToLinkedIn } from "../pipeline/index.js";
 import type { PromptLabel } from "../prompts.js";
+import { saveLastTrace } from "../last-trace.js";
 import { getProvider } from "../providers/index.js";
 
 const { values, positionals } = parseArgs({
@@ -47,11 +48,20 @@ try {
       }),
   );
 
+  await saveLastTrace({
+    traceId: result.traceId,
+    url,
+    model: `${provider.provider}:${provider.model}`,
+    promptLabel,
+    createdAt: new Date().toISOString(),
+  });
+
   console.log(`\n${result.post}\n`);
   console.log(`Checks: ${result.check.passed ? "all passed" : "some failed"}`, result.check.rules);
   // getTraceUrl asks the Langfuse API for the project id: don't fail the run if it's down.
   const traceUrl = await new LangfuseClient().getTraceUrl(result.traceId).catch(() => undefined);
   console.log(`Trace: ${traceUrl ?? `${result.traceId} (Langfuse unreachable, prompts fell back to v1 from the code)`}`);
+  console.log("Rate it: npm run feedback -- up|down [\"comment\"]");
 } catch (error) {
   // The failed run is still in Langfuse: the span that threw is marked as an error.
   console.error(`\n✖ ${error instanceof Error ? error.message : error}`);

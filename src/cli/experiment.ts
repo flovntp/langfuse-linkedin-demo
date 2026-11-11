@@ -1,13 +1,15 @@
-// npm run experiment -- [--model=anthropic:claude-haiku-5-5] [--label=production] [--limit=N] [--concurrency=4]
+// npm run experiment -- [--model=anthropic:claude-haiku-5-5] [--label=production] [--judge=provider:model ...] [--limit=N] [--concurrency=4]
 // Runs the whole pipeline on every item of the dataset, scores each post, and records it all
 // as one experiment run in Langfuse. Run it twice with a different --model or --label, then
 // compare the two runs side by side in Datasets → blog-posts.
+// --judge can be repeated: every judge scores the same posts, to check the ranking does not
+// depend on the judge (e.g. a Claude judge favoring Claude).
 import { shutdownTracing } from "../instrumentation.js"; // must stay the first import
 import { parseArgs } from "node:util";
 import { LangfuseClient } from "@langfuse/client";
 import { propagateAttributes } from "@langfuse/tracing";
-import { faithfulnessEvaluator, ruleEvaluator, runSummary, type ArticleTexts, type PostInput } from "../experiment/evaluators.js";
-import { JUDGE_MODEL } from "../experiment/judge.js";
+import { faithfulnessEvaluator, faithfulnessScoreName, ruleEvaluator, runSummary, type ArticleTexts, type PostInput } from "../experiment/evaluators.js";
+import { DEFAULT_JUDGE, loadJudge } from "../experiment/judge.js";
 import { blogToLinkedIn } from "../pipeline/index.js";
 import { getProvider } from "../providers/index.js";
 import { DATASET_NAME } from "../setup/dataset-items.js";
@@ -21,6 +23,7 @@ const { values } = parseArgs({
     "max-chars": { type: "string", default: "1300" },
     limit: { type: "string" }, // only the first N items, for a quick try
     concurrency: { type: "string", default: "4" },
+    judge: { type: "string", multiple: true, default: [DEFAULT_JUDGE] },
   },
 });
 
@@ -31,11 +34,14 @@ try {
   const modelSpec = `${provider.provider}:${provider.model}`;
   const promptLabel = values.label!;
   const maxChars = Number(values["max-chars"]);
+  const judges = values.judge!.map(loadJudge);
+  const judgeNames = judges.map((j) => j.spec).join(", ");
+  const scoreNames = judges.map(faithfulnessScoreName);
   const runName = `${modelSpec} · prompt ${promptLabel} · ${new Date().toISOString().slice(0, 16).replace("T", " ")}`;
 
   const dataset = await langfuse.dataset.get(DATASET_NAME);
   const items = values.limit ? dataset.items.slice(0, Number(values.limit)) : dataset.items;
-  console.log(`Experiment "${runName}" on ${items.length} posts (judge: ${JUDGE_MODEL})\n`);
+  console.log(`Experiment "${runName}" on ${items.length} posts (judge: ${judgeNames})\n`);
 
   const articles: ArticleTexts = new Map();
 
@@ -43,8 +49,8 @@ try {
   const result = await langfuse.experiment.run({
     name: "blog-to-linkedin",
     runName,
-    description: `Model ${modelSpec}, prompts labeled "${promptLabel}", judged by ${JUDGE_MODEL}`,
-    metadata: { model: modelSpec, promptLabel, judge: JUDGE_MODEL, tone: values.tone, language: values.lang, maxChars },
+    description: `Model ${modelSpec}, prompts labeled "${promptLabel}", judged by ${judgeNames}`,
+    metadata: { model: modelSpec, promptLabel, judges: judgeNames, tone: values.tone, language: values.lang, maxChars },
     data: items,
     maxConcurrency: Number(values.concurrency),
 
@@ -60,15 +66,19 @@ try {
       return run.post;
     },
 
-    evaluators: [ruleEvaluator(maxChars), faithfulnessEvaluator(runName, articles)],
-    runEvaluators: [runSummary],
+    evaluators: [
+      ruleEvaluator(maxChars),
+      ...judges.map((judge, i) => faithfulnessEvaluator(runName, articles, judge, scoreNames[i])),
+    ],
+    runEvaluators: [runSummary(scoreNames)],
   });
 
   console.log("\n");
   for (const r of result.itemResults) {
     const score = (name: string) => r.evaluations.find((e) => e.name === name)?.value;
     const rules = ["length_ok", "has_link", "hashtags_ok"].map((n) => (score(n) === 1 ? "✓" : "✗")).join("");
-    console.log(`  ${rules}  faithfulness ${String(score("faithfulness") ?? "-").padEnd(4)}  ${(r.item.input as PostInput).url}`);
+    const faithfulness = scoreNames.map((n) => String(score(n) ?? "-").padEnd(4)).join(" ");
+    console.log(`  ${rules}  faithfulness ${faithfulness}  ${(r.item.input as PostInput).url}`);
   }
   const failed = items.length - result.itemResults.length;
   console.log(`\n${result.runEvaluations.map((e) => `${e.name}: ${Number(e.value).toFixed(2)}`).join("   ")}`);

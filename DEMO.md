@@ -16,7 +16,9 @@ Experiments are **shown from recorded runs**: they take minutes and LLM output c
   npm run experiment -- --label=staging
   npm run experiment -- --model=openrouter:google/gemma-3-12b-it --label=staging
   ```
-  Delete failed or test runs in the UI so the Experiments list stays readable.
+  Delete failed or test runs so the Experiments list stays readable. Langfuse v4 has no delete
+  button for experiments: `npm run cleanup` lists them with their ids, then
+  `npm run cleanup -- <id> ... --yes` deletes their item traces, which removes them.
 - [ ] In the Compare view, check that the ClickHouse 26.10 row still makes the point (see step 4).
   If Gemma did not make a mistake there this time, pick the row with the largest faithfulness gap.
 - [ ] Offline rehearsal: wifi off, LM Studio on, then

@@ -37,7 +37,7 @@ try {
   const judges = values.judge!.map(loadJudge);
   const judgeNames = judges.map((j) => j.spec).join(", ");
   const scoreNames = judges.map(faithfulnessScoreName);
-  const runName = `${modelSpec} · prompt ${promptLabel} · ${new Date().toISOString().slice(0, 16).replace("T", " ")}`;
+  const runName = `${modelSpec} · prompt ${promptLabel} · ${new Date().toISOString().slice(0, 19).replace("T", " ")}`;
 
   const dataset = await langfuse.dataset.get(DATASET_NAME);
   const items = values.limit ? dataset.items.slice(0, Number(values.limit)) : dataset.items;

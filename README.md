@@ -73,6 +73,7 @@ Each step can be run on its own. What to look at in the UI is in [DEMO.md](DEMO.
 | 3. Dataset | `npm run setup` | **Datasets → blog-posts**: 16 items |
 | 4. Experiments | `npm run experiment -- --model=<provider:model> --label=<label>` | **Datasets → blog-posts → Experiments → Compare** |
 | 5. Feedback | `npm run feedback -- up\|down ["comment"]` | `user-feedback` score on the last trace |
+| Cleanup | `npm run cleanup` (list), `npm run cleanup -- <id> --yes` | Removes a test experiment (v4 has no delete button) |
 
 Useful flags: `--model`, `--label`, `--lang` (default English), `--tone`, `--max-chars`, and on
 experiments `--limit=N` for a quick try and `--judge=<provider:model>` (repeatable: every judge
@@ -128,7 +129,8 @@ Click Gemma's `faithfulness` score to read why the judge gave 0.5:
 - **Evaluators run outside the item's trace**, so the judge's cost is not added to the pipeline's.
   The judge has its own trace (`faithfulness-judge`, tag `judge`).
 - **Langfuse v4 reads.** Some public read endpoints (traces, scores) are off in v4's events-only
-  mode. The UI has everything; for scripts, use `/api/public/v2/observations`.
+  mode. The UI has everything; for scripts, use `/api/public/v2/observations`. There is no way
+  to delete an experiment either: delete its item traces (`npm run cleanup`).
 
 ## Project layout
 

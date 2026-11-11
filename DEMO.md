@@ -103,8 +103,11 @@ Datasets → `blog-posts` → Runs. Show the run-level scores of the three runs:
 Lines to say: *"My code says both posts are fine. Only the judge sees that one of them is wrong."*
 and *"Gemma is 4 times cheaper. Langfuse tells me what I give up for it."*
 
-Be ready for: *"Isn't a Claude judge biased toward Claude?"* Yes, it can be: say so, the judge is
-fixed for every run so the comparison is consistent, and a second judge is the next step.
+Be ready for: *"Isn't a Claude judge biased toward Claude?"* Maybe, and I measured it: with
+`--judge` repeated, the same posts got a Claude score and a Gemma score. The Gemma judge ranks
+Gemma slightly ahead (0.78 vs 0.75), but it gives 0.75 to almost everything and marked down a
+correct post. Answer: *"The ranking depends on the judge, so the judge needs its own eval:
+a few posts where I know the right answer."*
 
 ### 8:30 – Feedback (1 min, live)
 

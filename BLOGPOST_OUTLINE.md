@@ -110,12 +110,16 @@ The best story of the build, give it its own section:
   `WARNING`, and set `max_tokens` to 8,000 in the prompt config (a ceiling, not a cost).
 - Lesson: without the dataset run, I would have blamed the prompt.
 
-## 9. Limits, honestly (150 words)
+## 9. Limits, honestly (300 words)
 
 - One run per configuration: LLM output varies, small gaps are noise. Run each config 2–3 times
   before deciding.
-- A Claude judge grading Claude may favor it. Next step: a second judge from another family, and
-  check the ranking holds.
+- A Claude judge grading Claude may favor it. I checked with `--judge` twice (Claude and Gemma
+  judge the same posts) and the ranking **flips**: Claude judge 0.77 vs 0.67 for Claude; Gemma
+  judge 0.75 vs 0.78 for Gemma. Each judge prefers its own family, or the smaller judge cannot
+  tell good from bad: Gemma scores 0.75 almost everywhere and its reasons are vague (it marked
+  down Claude's correct "7 / 2 returns 3.5"). Lesson: validate the judge itself on posts with a
+  known answer (a few human labels) before trusting a ranking. Good material for 200 words.
 - 16 posts is a demo, not a benchmark.
 
 ## 10. Try it (100 words)

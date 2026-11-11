@@ -43,7 +43,8 @@ flowchart LR
 - **Models** sit behind a `<provider>:<model>` string: `anthropic:claude-haiku-5-5` (default),
   `openrouter:google/gemma-3-12b-it`, `lmstudio:gemma-3-12b-it-qat` (local, LM Studio or LM Studio Bionic).
 - **Rule check** is plain code: at most 1,300 characters, the link is in the post, at most 3 hashtags.
-- **Judge** is always Claude Haiku 5.5, whatever model wrote the post, so runs stay comparable.
+- **Judge** is Claude Haiku 5.5 by default, whatever model wrote the post, so runs stay comparable.
+  `--judge` swaps it or adds more judges.
 
 ## Quickstart (5 minutes)
 
@@ -74,8 +75,9 @@ Each step can be run on its own. What to look at in the UI is in [DEMO.md](DEMO.
 | 4. Experiments | `npm run experiment -- --model=<provider:model> --label=<label>` | **Datasets → blog-posts → Runs → Compare** |
 | 5. Feedback | `npm run feedback -- up\|down ["comment"]` | `user-feedback` score on the last trace |
 
-Useful flags: `--model`, `--label`, `--lang` (default English), `--tone`, `--max-chars`, and
-`--limit=N` on experiments for a quick try.
+Useful flags: `--model`, `--label`, `--lang` (default English), `--tone`, `--max-chars`, and on
+experiments `--limit=N` for a quick try and `--judge=<provider:model>` (repeatable: every judge
+scores the same posts, as `faithfulness`, `faithfulness:<model>`…).
 
 To add your own posts to the dataset, edit `MY_POSTS` in
 [src/setup/dataset-items.ts](src/setup/dataset-items.ts) and run `npm run setup` again.
@@ -95,6 +97,18 @@ Gemma follows the rules just as well, but states more things the article does no
 does so the same way locally and hosted: the 4-bit local version is as faithful as the hosted one. On the
 ClickHouse 26.10 release notes, its hook claims integer division truncates by default; the article
 says the opposite. Only the judge catches it: the code checks pass.
+
+**Is the judge biased?** Same two `staging` runs, each post scored by both judges:
+
+| Judge | Claude posts | Gemma posts | Ranking |
+|---|---|---|---|
+| Claude Haiku 5.5 | 0.77 | 0.67 | Claude ahead |
+| Gemma 3 12B | 0.75 | 0.78 | Gemma slightly ahead |
+
+The ranking depends on the judge. The Gemma judge gives 0.75 to almost everything and its
+reasons are vague (it marked Claude's correct "7 / 2 returns 3.5" post down to 0.5), while the
+Claude judge cites the article line by line. So: check your judge on posts where you know the
+answer before trusting its ranking, and treat a gap measured by a single judge as a hypothesis.
 
 <!-- Screenshot: the Compare view with the two staging runs side by side -->
 ![Compare runs](docs/screenshots/compare.png)

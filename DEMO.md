@@ -16,14 +16,14 @@ Experiments are **shown from recorded runs**: they take minutes and LLM output c
   npm run experiment -- --label=staging
   npm run experiment -- --model=openrouter:google/gemma-3-12b-it --label=staging
   ```
-  Delete failed or test runs in the UI so the Runs list stays readable.
+  Delete failed or test runs in the UI so the Experiments list stays readable.
 - [ ] In the Compare view, check that the ClickHouse 26.10 row still makes the point (see step 4).
   If Gemma did not make a mistake there this time, pick the row with the largest faithfulness gap.
 - [ ] Offline rehearsal: wifi off, LM Studio on, then
   `npm run run -- https://clickhouse.com/blog/clickhouse-release-26-10 --model=lmstudio:gemma-3-12b-it-qat`.
   Tested with LM Studio Bionic (port 1235, Gemma 3 12B QAT 4-bit, 16k context): about 2 minutes
   per post on an M2 with 24 GB. Too slow to wait for on stage: start it, talk, come back.
-- [ ] Browser tabs, in order: Traces, Prompts → `linkedin-post`, Datasets → `blog-posts` → Runs,
+- [ ] Browser tabs, in order: Traces, Prompts → `linkedin-post`, Datasets → `blog-posts` → Experiments,
   the Compare view. Zoom the browser to 125–150% for the projector.
 - [ ] Terminal: large font, in the repo folder, history cleared (`clear`).
 
@@ -80,7 +80,7 @@ Simon Willison, and mine). Announcements, deep dives, release notes, short and l
 
 ### 5:30 – Experiments (3 min, recorded runs)
 
-Datasets → `blog-posts` → Runs. Show the run-level scores of the three runs:
+Datasets → `blog-posts` → Experiments (or the link printed by `npm run experiment`). Show the run-level scores of the three runs:
 
 | Run | Pass every rule | Avg faithfulness |
 |---|---|---|

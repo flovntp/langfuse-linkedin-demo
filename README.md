@@ -72,7 +72,7 @@ Each step can be run on its own. What to look at in the UI is in [DEMO.md](DEMO.
 | 1. Tracing | `npm run run -- <url>` | **Tracing → Traces**: one trace per run, nested spans, cost |
 | 2. Prompt management | `npm run run -- <url> --label=staging` | **Prompts**: v1 / v2, diff, metrics per version |
 | 3. Dataset | `npm run setup` | **Datasets → blog-posts**: 16 items |
-| 4. Experiments | `npm run experiment -- --model=<provider:model> --label=<label>` | **Datasets → blog-posts → Runs → Compare** |
+| 4. Experiments | `npm run experiment -- --model=<provider:model> --label=<label>` | **Datasets → blog-posts → Experiments → Compare** |
 | 5. Feedback | `npm run feedback -- up\|down ["comment"]` | `user-feedback` score on the last trace |
 
 Useful flags: `--model`, `--label`, `--lang` (default English), `--tone`, `--max-chars`, and on

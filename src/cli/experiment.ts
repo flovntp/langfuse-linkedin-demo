@@ -45,7 +45,7 @@ try {
 
   const articles: ArticleTexts = new Map();
 
-  // Dataset items keep their dataset id, so the run shows up under Datasets → blog-posts → Runs.
+  // Dataset items keep their dataset id, so the run shows up under Datasets → blog-posts → Experiments.
   const result = await langfuse.experiment.run({
     name: "blog-to-linkedin",
     runName,

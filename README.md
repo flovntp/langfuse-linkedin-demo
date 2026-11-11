@@ -13,7 +13,6 @@ A small TypeScript CLI that turns a technical blog post into a LinkedIn post, an
   compare the two runs side by side.
 - **Do people like it?** Thumbs up / down on a post becomes a score on its trace.
 
-<!-- Screenshot: one trace in the Langfuse UI (fetch-article → summarize → generate-post → check-post) -->
 ![Trace view](docs/screenshots/trace.png)
 
 ## How it works
@@ -79,6 +78,8 @@ Useful flags: `--model`, `--label`, `--lang` (default English), `--tone`, `--max
 experiments `--limit=N` for a quick try and `--judge=<provider:model>` (repeatable: every judge
 scores the same posts, as `faithfulness`, `faithfulness:<model>`…).
 
+![Prompt v1 vs v2](docs/screenshots/prompt-diff.png)
+
 To add your own posts to the dataset, edit `MY_POSTS` in
 [src/setup/dataset-items.ts](src/setup/dataset-items.ts) and run `npm run setup` again.
 
@@ -110,8 +111,11 @@ reasons are vague (it marked Claude's correct "7 / 2 returns 3.5" post down to 0
 Claude judge cites the article line by line. So: check your judge on posts where you know the
 answer before trusting its ranking, and treat a gap measured by a single judge as a hypothesis.
 
-<!-- Screenshot: the Compare view with the two staging runs side by side -->
 ![Compare runs](docs/screenshots/compare.png)
+
+Click Gemma's `faithfulness` score to read why the judge gave 0.5:
+
+<img src="docs/screenshots/judge-comment.png" alt="Judge comment" width="400">
 
 ## Things this demo ran into
 

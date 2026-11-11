@@ -9,8 +9,8 @@ numbers instead of vibes, and they can run it themselves from the repo.
 
 **Length**: ~1,800 words, 5 screenshots, 4 short code snippets.
 
-> Gemma ran twice: hosted on OpenRouter and locally (LM Studio Bionic, QAT 4-bit, 16k context).
-> Faithfulness is the same (0.66 vs 0.67): the gap is Gemma vs Claude, not local vs hosted.
+> Every configuration ran 3 times. Gemma ran hosted (OpenRouter) and locally (LM Studio Bionic,
+> QAT 4-bit, 16k context): 0.67 vs 0.64, within noise. The real gap is Gemma vs Claude.
 
 ---
 
@@ -77,22 +77,26 @@ Open on the ClickHouse 26.10 example, before any explanation:
 
 ## 7. The results (300 words)
 
-Table (replace with final runs):
+Table (3 runs per configuration, averaged):
 
-| Run | Pass every rule | Avg faithfulness | Cost, 16 posts | Time per post |
+| Run | Posts passing every rule | Avg faithfulness (min–max) | Generation cost (16 posts) | Time per post |
 |---|---|---|---|---|
-| Claude Haiku 5.5, prompt v1 | 69% | 0.73 | $0.018 | 8 s |
-| Claude Haiku 5.5, prompt v2 | 94% | 0.77 | $0.017 | 7 s |
-| Gemma 3 12B, prompt v2 (OpenRouter) | 100% | 0.66 | $0.004 | 24 s |
-| Gemma 3 12B QAT 4-bit, prompt v2 (LM Studio Bionic, local, M2 24 GB) | 100% | 0.67 | $0 | 76 s |
+| Claude Haiku 5.5, prompt v1 | 71% | **0.78** (0.73–0.84) | $0.018 | 8 s |
+| Claude Haiku 5.5, prompt v2 | **96%** | **0.78** (0.77–0.80) | $0.016 | 7 s |
+| Gemma 3 12B (OpenRouter), prompt v2 | **100%** | 0.67 (0.66–0.67) | $0.004 | 13–24 s |
+| Gemma 3 12B QAT 4-bit (local, M2 24 GB), prompt v2 | **100%** | 0.64 (0.61–0.67) | **$0** | 75 s |
 
 What to say:
 - The prompt mattered more than the model for the rules: v1 → v2 is +25 points.
+- But v2 is not more faithful (0.78 both). With a single run it looked +0.04 better: noise. Good
+  short paragraph on why you run each config more than once.
 - Gemma follows instructions as well, but adds things the article does not say: lower on 7 posts,
   equal on 7, higher on 2.
 - Back to the hook example, with `compare.png` and `judge-comment.png`.
-- Local vs hosted Gemma: same faithfulness, so 4-bit quantization (QAT) did not cost quality here.
-  Local is free and private but ~3x slower than hosted on a 24 GB M2 (76 s vs 24 s per post).
+- Local vs hosted Gemma: 0.64 vs 0.67, within the spread of the local runs (0.61–0.67). No clear
+  quality cost from 4-bit quantization (QAT), but no proof of none either. Local is free and private
+  but ~3–5x slower than hosted on a 24 GB M2 (75 s vs 13–24 s per post; 136 s when the Mac was
+  also running other experiments).
 - Side story for the local section: the first local run took 7 minutes per post. On-demand
   loading had picked an 81k-token context; the KV cache pushed the Mac into swap (0.6 tokens/s).
   Reloading at 16k: 6.6 tokens/s. Check the loaded context before blaming the model.
@@ -112,8 +116,8 @@ The best story of the build, give it its own section:
 
 ## 9. Limits, honestly (300 words)
 
-- One run per configuration: LLM output varies, small gaps are noise. Run each config 2–3 times
-  before deciding.
+- Three runs per configuration is still few: Claude v1 faithfulness ranged 0.73–0.84 across runs.
+  Gaps under ~0.05 are noise here.
 - A Claude judge grading Claude may favor it. I checked with `--judge` twice (Claude and Gemma
   judge the same posts) and the ranking **flips**: Claude judge 0.77 vs 0.67 for Claude; Gemma
   judge 0.75 vs 0.78 for Gemma. Each judge prefers its own family, or the smaller judge cannot
@@ -133,6 +137,6 @@ The best story of the build, give it its own section:
 ## Assets checklist
 
 - [ ] Screenshots listed in `docs/screenshots/README.md`
-- [ ] Final experiment runs (2–3 per config) and the updated table
+- [x] Final experiment runs (3 per config) and the updated table
 - [ ] Short side note: Langfuse v4 turned off some public read endpoints (traces, scores) in
       events-only mode; use `/api/public/v2/observations`, or the UI

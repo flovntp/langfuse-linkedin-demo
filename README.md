@@ -84,21 +84,25 @@ scores the same posts, as `faithfulness`, `faithfulness:<model>`…).
 To add your own posts to the dataset, edit `MY_POSTS` in
 [src/setup/dataset-items.ts](src/setup/dataset-items.ts) and run `npm run setup` again.
 
-## Results from one afternoon
+## Results
 
-Same 16 posts, same judge, one run each (LLM output varies, so treat small gaps as noise):
+Same 16 posts, same judge (Claude Haiku 5.5), **3 runs per configuration**, averaged:
 
-| Run | Posts passing every rule | Avg faithfulness | Generation cost (16 posts) | Time per post |
+| Run | Posts passing every rule | Avg faithfulness (min–max) | Generation cost (16 posts) | Time per post |
 |---|---|---|---|---|
-| Claude Haiku 5.5, prompt v1 | 69% | 0.73 | $0.018 | 8 s |
-| Claude Haiku 5.5, prompt v2 | **94%** | **0.77** | $0.017 | 7 s |
-| Gemma 3 12B (OpenRouter), prompt v2 | **100%** | 0.66 | $0.004 | 24 s |
-| Gemma 3 12B QAT 4-bit (local, M2 24 GB), prompt v2 | **100%** | 0.67 | **$0** | 76 s |
+| Claude Haiku 5.5, prompt v1 | 71% | **0.78** (0.73–0.84) | $0.018 | 8 s |
+| Claude Haiku 5.5, prompt v2 | **96%** | **0.78** (0.77–0.80) | $0.016 | 7 s |
+| Gemma 3 12B (OpenRouter), prompt v2 | **100%** | 0.67 (0.66–0.67) | $0.004 | 13–24 s |
+| Gemma 3 12B QAT 4-bit (local, M2 24 GB), prompt v2 | **100%** | 0.64 (0.61–0.67) | **$0** | 75 s |
 
-Gemma follows the rules just as well, but states more things the article does not say, and it
-does so the same way locally and hosted: the 4-bit local version is as faithful as the hosted one. On the
-ClickHouse 26.10 release notes, its hook claims integer division truncates by default; the article
-says the opposite. Only the judge catches it: the code checks pass.
+- **Prompt v2 fixes the format, not the facts.** It passes the rules far more often (+25 points)
+  but is not more faithful. With one run each, v2 looked more faithful (0.77 vs 0.73): that was noise.
+- **Gemma follows the rules just as well, but states more things the article does not say**, about
+  0.11–0.14 below Claude, in every run. On the ClickHouse 26.10 release notes, one of its hooks
+  claims integer division truncates by default; the article says the opposite. Only the judge
+  catches it: the code checks pass.
+- **Local vs hosted Gemma**: 0.64 vs 0.67, within the spread of the local runs. No clear cost of
+  4-bit quantization here, and no clear proof there is none either.
 
 **Is the judge biased?** Same two `staging` runs, each post scored by both judges:
 

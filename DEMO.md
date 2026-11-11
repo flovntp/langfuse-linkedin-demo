@@ -91,9 +91,14 @@ Datasets → `blog-posts` → Experiments (or the link printed by `npm run exper
 | Gemma 3 12B, prompt v2 (OpenRouter) | 100% | 0.66 |
 | Gemma 3 12B QAT, prompt v2 (local) | 100% | 0.67 |
 
-(Numbers from the rehearsal runs on 2026-11-10: replace them with yours.)
+Averages over 3 runs per configuration: Claude v1 71% / 0.78, Claude v2 96% / 0.78,
+Gemma hosted 100% / 0.67, Gemma local 100% / 0.64.
 
-1. **Prompt v1 vs v2** (same model): v2 passes the rules far more often, and is not less faithful.
+(The table shows the runs on screen, from 2026-11-10. If asked about noise: each config was run
+3 times; the v1 vs v2 faithfulness gap disappears on average, the Claude vs Gemma gap does not.)
+
+1. **Prompt v1 vs v2** (same model): v2 passes the rules far more often. It is not more faithful: over 3 runs both
+   average 0.78. The prompt fixes the format, not the facts.
 2. **Claude vs Gemma** (same prompt): select both `staging` runs → **Compare**. Go to the
    **ClickHouse 26.10** row:
    - Claude's hook: *"Did you know ClickHouse 7 / 2 returns 3.5 by default?"* (correct).

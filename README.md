@@ -127,7 +127,10 @@ Click Gemma's `faithfulness` score to read why the judge gave 0.5:
 
 ## Things this demo ran into
 
-- **Thinking tokens count against `max_tokens`.** Claude Haiku 5.5 thinks by default. With
+- **Thinking tokens count against `max_tokens`.** Claude Haiku 5.5 thinks by default
+  ([Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking#configuring-thinking)),
+  and thinking counts toward `max_tokens`
+  ([Cost control](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost#cost-control)). With
   `max_tokens: 1024`, a third of the summaries and posts were silently cut off. The providers now
   report truncation and the generation is marked `WARNING`; the prompt config sets 8,000.
 - **Double-counted cost.** Recent Anthropic SDKs emit their own OpenTelemetry span per call, which

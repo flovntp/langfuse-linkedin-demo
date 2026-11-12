@@ -13,6 +13,9 @@ A small TypeScript CLI that turns a technical blog post into a LinkedIn post, an
   compare the two runs side by side.
 - **Do people like it?** Thumbs up / down on a post becomes a score on its trace.
 
+The full story, with the results and what went wrong along the way:
+[Local LLM vs Claude: measuring the difference with Langfuse experiments](https://vntp.fr/en/blog/local-llm-vs-claude-langfuse-experiments/).
+
 ![Trace view](docs/screenshots/trace.png)
 
 ## How it works
